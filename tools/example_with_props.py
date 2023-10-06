@@ -3,8 +3,8 @@ from src.models import *
 
 # Providing general configuration
 custom_lineage_config = CustomLineageConfig(
-    application_name="custom-lineage-advanced-demo",
-    output_directory="/Users/kristof.vancoillie/Documents/Collibra/Custom Lineage/sdk/advanced",
+    application_name="custom-lineage-example-with-props",
+    output_directory="/tmp/example_with_props",
     source_code_directory_name="source_codes",
 )
 

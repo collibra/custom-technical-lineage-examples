@@ -198,7 +198,3 @@ if __name__ == "__main__":
         output_directory=args.target_directory,
         migrate_source_code=args.migrate_source_code,
     )
-
-# input_dir = "/Users/kristof.vancoillie/Documents/Collibra/Custom Lineage/customers/sky onedata/451a39bd-44c0-4e9c-87b7-dab2d9ced5d3^271769cc-60ce-480c-8451-026c82e3d074/__CUSTOM-LINEAGE__"
-# output_dir = "/Users/kristof.vancoillie/Documents/Collibra/Custom Lineage/customers/sky onedata/451a39bd-44c0-4e9c-87b7-dab2d9ced5d3^271769cc-60ce-480c-8451-026c82e3d074/__CUSTOM-LINEAGE__/v3"
-# convert(input_directory=input_dir, output_directory=output_dir, migrate_source_code=True)
