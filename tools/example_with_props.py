@@ -68,8 +68,8 @@ file_parent_asset = ParentAsset(
     nodes=file_group_node_asset.nodes,
     parent=Asset(name="coetest", type=table_type.name),
     props=AssetProperties(
-        fullname="f13bf705-13a4-44c9-843e-f341feccfb6e > projects/460474087160/locations/us-east1/lakes/lake-in-us-east1/zones/raw/entities/coetest",
-        domain_id="fea1b0b0-705f-4e0d-b5eb-1f21132cc718",
+        fullname="<gcs_id> > projects/<project_id>/locations/us-east1/lakes/lake-in-us-east1/zones/raw/entities/coetest",
+        domain_id="<domain_id>",
     ),
 )
 file_leaf_asset_first_name = LeafAsset(
@@ -77,8 +77,8 @@ file_leaf_asset_first_name = LeafAsset(
     parent=file_parent_asset.parent,
     leaf=Asset(name="first_name", type=column_type.name),
     props=AssetProperties(
-        fullname="f13bf705-13a4-44c9-843e-f341feccfb6e > projects/460474087160/locations/us-east1/lakes/lake-in-us-east1/zones/raw/entities/coetest > first_name",
-        domain_id="fea1b0b0-705f-4e0d-b5eb-1f21132cc718",
+        fullname="<gcs_id> > projects/<project_id>/locations/us-east1/lakes/lake-in-us-east1/zones/raw/entities/coetest > first_name",
+        domain_id="<domain_id>",
     ),
 )
 file_leaf_asset_last_name = LeafAsset(
@@ -86,8 +86,8 @@ file_leaf_asset_last_name = LeafAsset(
     parent=file_parent_asset.parent,
     leaf=Asset(name="last_name", type=column_type.name),
     props=AssetProperties(
-        fullname="f13bf705-13a4-44c9-843e-f341feccfb6e > projects/460474087160/locations/us-east1/lakes/lake-in-us-east1/zones/raw/entities/coetest > last_name",
-        domain_id="fea1b0b0-705f-4e0d-b5eb-1f21132cc718",
+        fullname="<gcs_id> > projects/<project_id>/locations/us-east1/lakes/lake-in-us-east1/zones/raw/entities/coetest > last_name",
+        domain_id="<domain_id>",
     ),
 )
 assets = [file_parent_asset]
