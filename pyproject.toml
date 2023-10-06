@@ -1,0 +1,20 @@
+[tool.black]
+target-version = ['py39']
+line-length = 120
+
+
+[tool.isort]
+# isort configuration that is compatible with Black.
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 120
+
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"

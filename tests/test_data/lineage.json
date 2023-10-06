@@ -1,0 +1,112 @@
+{
+    "version": "1.0",
+    "tree": [{
+      "name": "snowflake",
+      "type": "system",
+      "children": [{
+        "name": "DB1",
+        "type": "database",
+        "children": [{
+          "name": "PUBLIC",
+          "type": "schema",
+          "children": [{
+            "name": "T1",
+            "type": "table",
+            "leaves": [{
+                "name": "col1",
+                "type": "column"
+              },
+              {
+                "name": "col2",
+                "type": "column"
+              }
+            ]
+          },{
+            "name": "VIEW1",
+            "type": "table",
+            "leaves": [{
+                "name": "col1",
+                "type": "column"
+              },
+              {
+                "name": "col2",
+                "type": "column"
+              }
+            ]
+          }]
+        }]
+      }]
+    }],
+    "lineages": [{
+      "src_path": [{
+          "system": "snowflake"
+        },
+        {
+          "database": "DB1"
+        },
+        {
+          "schema": "PUBLIC"
+        },
+        {
+          "table": "T1"
+        },
+        {
+          "column": "col1"
+        }
+      ],
+      "trg_path": [{
+          "system": "snowflake"
+        },
+        {
+          "database": "DB1"
+        },
+        {
+          "schema": "PUBLIC"
+        },
+        {
+          "table": "VIEW1"
+        },
+        {
+          "column": "col1"
+        }
+      ],
+      "mapping": "VIEW1 creation",
+      "source_code": "SELECT col1, col2 from T1;"
+    },{
+        "src_path": [{
+            "system": "snowflake"
+          },
+          {
+            "database": "DB1"
+          },
+          {
+            "schema": "PUBLIC"
+          },
+          {
+            "table": "T1"
+          },
+          {
+            "column": "col2"
+          }
+        ],
+        "trg_path": [{
+            "system": "snowflake"
+          },
+          {
+            "database": "DB1"
+          },
+          {
+            "schema": "PUBLIC"
+          },
+          {
+            "table": "VIEW1"
+          },
+          {
+            "column": "col2"
+          }
+        ],
+        "mapping": "VIEW1 creation",
+        "source_code": "SELECT col1, col2 from T1;"
+      }]
+  }
+  

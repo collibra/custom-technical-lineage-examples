@@ -1,0 +1,108 @@
+[
+  {
+    "src": {
+      "nodes": [
+        {
+          "name": "snowflake",
+          "type": "System"
+        },
+        {
+          "name": "DB1",
+          "type": "Database"
+        },
+        {
+          "name": "PUBLIC",
+          "type": "Schema"
+        }
+      ],
+      "parent": {
+        "name": "T1",
+        "type": "Table"
+      },
+      "leaf": {
+        "name": "col1",
+        "type": "Column"
+      },
+      "props": null
+    },
+    "trg": {
+      "nodes": [
+        {
+          "name": "snowflake",
+          "type": "System"
+        },
+        {
+          "name": "DB1",
+          "type": "Database"
+        },
+        {
+          "name": "PUBLIC",
+          "type": "Schema"
+        }
+      ],
+      "parent": {
+        "name": "VIEW1",
+        "type": "Table"
+      },
+      "leaf": {
+        "name": "col1",
+        "type": "Column"
+      },
+      "props": null
+    },
+    "source_code": null
+  },
+  {
+    "src": {
+      "nodes": [
+        {
+          "name": "snowflake",
+          "type": "System"
+        },
+        {
+          "name": "DB1",
+          "type": "Database"
+        },
+        {
+          "name": "PUBLIC",
+          "type": "Schema"
+        }
+      ],
+      "parent": {
+        "name": "T1",
+        "type": "Table"
+      },
+      "leaf": {
+        "name": "col2",
+        "type": "Column"
+      },
+      "props": null
+    },
+    "trg": {
+      "nodes": [
+        {
+          "name": "snowflake",
+          "type": "System"
+        },
+        {
+          "name": "DB1",
+          "type": "Database"
+        },
+        {
+          "name": "PUBLIC",
+          "type": "Schema"
+        }
+      ],
+      "parent": {
+        "name": "VIEW1",
+        "type": "Table"
+      },
+      "leaf": {
+        "name": "col2",
+        "type": "Column"
+      },
+      "props": null
+    },
+    "source_code": null
+  }
+]

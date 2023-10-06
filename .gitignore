@@ -1,0 +1,9 @@
+.mypy_cache
+.venv
+.vscode
+.tests/.coverage
+.tests/__pycache__
+.tests/.pytest_cache
+.src/__pycache__
+.tools/__pycache__
+
