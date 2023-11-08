@@ -1,5 +1,16 @@
-from src.helper import *
-from src.models import *
+from src.helper import generate_json_files, generate_source_code
+from src.models import (
+    Asset,
+    AssetProperties,
+    AssetType,
+    CustomLineageConfig,
+    LeafAsset,
+    Lineage,
+    NodeAsset,
+    ParentAsset,
+    SourceCode,
+    SourceCodeHighLight,
+)
 
 # Providing general configuration
 custom_lineage_config = CustomLineageConfig(
@@ -68,7 +79,8 @@ file_parent_asset = ParentAsset(
     nodes=file_group_node_asset.nodes,
     parent=Asset(name="coetest", type=table_type.name),
     props=AssetProperties(
-        fullname="<gcs_id> > projects/<project_id>/locations/us-east1/lakes/lake-in-us-east1/zones/raw/entities/coetest",
+        fullname="<gcs_id> > projects/<project_id>/locations/us-east1/lakes/\
+            lake-in-us-east1/zones/raw/entities/coetest",
         domain_id="<domain_id>",
     ),
 )
@@ -77,7 +89,8 @@ file_leaf_asset_first_name = LeafAsset(
     parent=file_parent_asset.parent,
     leaf=Asset(name="first_name", type=column_type.name),
     props=AssetProperties(
-        fullname="<gcs_id> > projects/<project_id>/locations/us-east1/lakes/lake-in-us-east1/zones/raw/entities/coetest > first_name",
+        fullname="<gcs_id> > projects/<project_id>/locations/us-east1/lakes/\
+            lake-in-us-east1/zones/raw/entities/coetest > first_name",
         domain_id="<domain_id>",
     ),
 )
@@ -86,7 +99,8 @@ file_leaf_asset_last_name = LeafAsset(
     parent=file_parent_asset.parent,
     leaf=Asset(name="last_name", type=column_type.name),
     props=AssetProperties(
-        fullname="<gcs_id> > projects/<project_id>/locations/us-east1/lakes/lake-in-us-east1/zones/raw/entities/coetest > last_name",
+        fullname="<gcs_id> > projects/<project_id>/locations/us-east1/lakes/\
+            lake-in-us-east1/zones/raw/entities/coetest > last_name",
         domain_id="<domain_id>",
     ),
 )
