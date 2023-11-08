@@ -3,8 +3,19 @@ import json
 import os
 from typing import Dict, List, Optional
 
-from src.helper import *
-from src.models import *
+from src.helper import generate_json_files, generate_source_code
+from src.models import (
+    Asset,
+    AssetProperties,
+    AssetType,
+    CustomLineageConfig,
+    LeafAsset,
+    Lineage,
+    NodeAsset,
+    ParentAsset,
+    SourceCode,
+    SourceCodeHighLight,
+)
 
 
 def _convert_asset_hierarchy(asset_hierarchy: dict, nodes: Optional[List[Asset]] = None) -> List[LeafAsset]:
@@ -83,7 +94,8 @@ def _convert_lineage_source(
                 )
         except FileNotFoundError as e:
             print(
-                f"Could not find {source_code_file_v1} which is specified in your lineage.json file in the input directory: {input_directory}. Make sure all the referenced files are available."
+                f"Could not find {source_code_file_v1} which is specified in your lineage.json file in \
+                    the input directory: {input_directory}. Make sure all the referenced files are available."
             )
             raise e
 

@@ -4,7 +4,18 @@ from typing import List, Optional, Sequence, Union
 
 from pydantic.json import pydantic_encoder
 
-from .models import *
+from .models import (
+    Asset,
+    AssetProperties,
+    AssetType,
+    CustomLineageConfig,
+    LeafAsset,
+    Lineage,
+    NodeAsset,
+    ParentAsset,
+    SourceCode,
+    SourceCodeHighLight,
+)
 
 __all__ = ["generate_json_files", "generate_source_code"]
 

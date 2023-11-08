@@ -1,5 +1,16 @@
-from src.helper import *
-from src.models import *
+from src.helper import generate_json_files, generate_source_code
+from src.models import (
+    Asset,
+    AssetProperties,
+    AssetType,
+    CustomLineageConfig,
+    LeafAsset,
+    Lineage,
+    NodeAsset,
+    ParentAsset,
+    SourceCode,
+    SourceCodeHighLight,
+)
 
 # Providing general configuration
 custom_lineage_config = CustomLineageConfig(
