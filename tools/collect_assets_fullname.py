@@ -13,26 +13,26 @@ def get_assets_fullname(collibra_instance: str, username: str, password: str,
     cursor = urllib.parse.quote('')
     limit = 1000
     retry = 0
-    path = f'https://{collibra_instance}.collibra.com/rest/2.0/assets?limit={limit}'
+    base_path = f'https://{collibra_instance}.collibra.com/rest/2.0/assets?limit={limit}'
 
     if domainId:
-        path = path + f'&domainId={domainId}'
+        base_path = base_path + f'&domainId={domainId}'
     if typeId:
-        path = path + f'&typeIds={typeId}'
+        base_path = base_path + f'&typeIds={typeId}'
     if name:
-        path = path + f'&name={urllib.parse.quote(name)}'
+        base_path = base_path + f'&name={urllib.parse.quote(name)}'
 
     while cursor is not None and retry < 5:
-        path = path + f'&cursor={cursor}'
+        query_path = base_path + f'&cursor={cursor}'
         try:
-            print(f'Sending GET {path}')
-            ret = requests.get(path, auth=auth)
+            print(f'Sending GET {query_path}')
+            ret = requests.get(query_path, auth=auth)
         except Exception as e:
-            print(f'GET {path} failed with\n{e}')
+            print(f'GET {query_path} failed with\n{e}')
             retry += 1
         else:
             if ret.status_code == 200:
-                print(f'Response received for GET {path}: {ret.status_code}')
+                print(f'Response received for GET {query_path}: {ret.status_code}')
                 retry = 0
                 result = json.loads(ret.text)
                 cursor = result['nextCursor'] if 'nextCursor' in result else None
@@ -42,10 +42,10 @@ def get_assets_fullname(collibra_instance: str, username: str, password: str,
                                       "id": entry.get('id', '')})
 
             elif ret.status_code >= 400 and ret.status_code < 500:
-                print(f'GET {path} failed with {ret.status_code} {ret.text}')
+                print(f'GET {query_path} failed with {ret.status_code} {ret.text}')
                 exit()
             else:
-                print(f'GET {path} failed with {ret.status_code} {ret.text}')
+                print(f'GET {query_path} failed with {ret.status_code} {ret.text}')
                 retry += 1
 
     if retry == 5:
@@ -91,7 +91,7 @@ if __name__ == "__main__":
         print('for help: python collect_assets_fullname.py -h')
         exit()
     if not domainId and not typeId and not name:
-        print('IT is mandatory to specify one of those parameters: DOMAINID, TYPEID, NAME')
+        print('It is mandatory to specify one of those parameters: DOMAINID, TYPEID, NAME')
         exit()
     if args.domainId:
         if not is_valid_uuid(args.domainId):
