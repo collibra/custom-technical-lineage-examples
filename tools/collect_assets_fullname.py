@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 from uuid import UUID
 from requests.auth import HTTPBasicAuth
 from typing import List
+from src.helper import collect_assets_fullname
 
 def get_assets_fullname(collibra_instance: str, username: str, password: str,
                         typeId: str=None, domainId:str=None, name:str=None) -> List:
@@ -86,27 +87,12 @@ if __name__ == "__main__":
     typeId = args.typeId
     name = args.name
     print(domainId, typeId, name)
-    if not collibra_instance or not username or not password:
-        print('The COLLIBRAINSTANCE, USERNAME and PASSWORD parameters are mandatory')
-        print('for help: python collect_assets_fullname.py -h')
-        exit()
-    if not domainId and not typeId and not name:
-        print('It is mandatory to specify one of those parameters: DOMAINID, TYPEID, NAME')
-        exit()
-    if args.domainId:
-        if not is_valid_uuid(args.domainId):
-            print(wrong_uuid_message('domain ID', args.domainId))
-            exit()
-    if args.typeId:
-        if not is_valid_uuid(args.typeId):
-            print(wrong_uuid_message('type ID', args.domainId))
-            exit()
-
-    fullnames = get_assets_fullname(collibra_instance=collibra_instance,
+    fullnames = collect_assets_fullname(collibra_instance=collibra_instance,
                         username=username,
                         password=password,
                         domainId=domainId,
                         typeId=typeId,
                         name=name)
+
     write_result_to_file(fullnames)
 
