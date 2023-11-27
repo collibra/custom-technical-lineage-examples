@@ -1,98 +1,42 @@
-import requests
-import urllib.parse
 import json
+import logging
 from argparse import ArgumentParser
-from uuid import UUID
-from requests.auth import HTTPBasicAuth
-from typing import List
+
 from src.helper import collect_assets_fullname
 
-def get_assets_fullname(collibra_instance: str, username: str, password: str,
-                        typeId: str=None, domainId:str=None, name:str=None) -> List:
-    fullnames = []
-    auth = HTTPBasicAuth(username=username, password=password)
-    cursor = urllib.parse.quote('')
-    limit = 1000
-    retry = 0
-    base_path = f'https://{collibra_instance}.collibra.com/rest/2.0/assets?limit={limit}'
+logger = logging.getLogger(__name__)
 
-    if domainId:
-        base_path = base_path + f'&domainId={domainId}'
-    if typeId:
-        base_path = base_path + f'&typeIds={typeId}'
-    if name:
-        base_path = base_path + f'&name={urllib.parse.quote(name)}'
-
-    while cursor is not None and retry < 5:
-        query_path = base_path + f'&cursor={cursor}'
-        try:
-            print(f'Sending GET {query_path}')
-            ret = requests.get(query_path, auth=auth)
-        except Exception as e:
-            print(f'GET {query_path} failed with\n{e}')
-            retry += 1
-        else:
-            if ret.status_code == 200:
-                print(f'Response received for GET {query_path}: {ret.status_code}')
-                retry = 0
-                result = json.loads(ret.text)
-                cursor = result['nextCursor'] if 'nextCursor' in result else None
-                for entry in result['results']:
-                    fullnames.append({"fullname" : entry.get('name', ''),
-                                      "domain ID": entry.get('domain', {}).get('id', ''),
-                                      "id": entry.get('id', '')})
-
-            elif ret.status_code >= 400 and ret.status_code < 500:
-                print(f'GET {query_path} failed with {ret.status_code} {ret.text}')
-                exit()
-            else:
-                print(f'GET {query_path} failed with {ret.status_code} {ret.text}')
-                retry += 1
-
-    if retry == 5:
-        print("Failed to retrieve asset's fullname")
-        exit()
-    return fullnames
-
-def is_valid_uuid(uuid_input: str) -> bool:
-    try:
-        UUID(uuid_input)
-    except:
-        return False
-    return True
-
-def wrong_uuid_message(input_type: str, uuid: str) -> str:
-    return f"The {input_type} entered {args.domainId} is not a valid ID"
 
 def write_result_to_file(fullnames: list):
-    with open('result.json', 'w') as f:
+    with open("result.json", "w") as f:
         json.dump(fullnames, f, indent=4)
-
 
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument('-c', '--collibraInstance')
-    parser.add_argument('-u', '--username')
-    parser.add_argument('-p', '--password')
-    parser.add_argument('-d', '--domainId')
-    parser.add_argument('-t', '--typeId')
-    parser.add_argument('-n', '--name')
+    parser.add_argument("-c", "--collibraInstance")
+    parser.add_argument("-u", "--username")
+    parser.add_argument("-p", "--password")
+    parser.add_argument("-d", "--domainId")
+    parser.add_argument("-t", "--typeId")
+    parser.add_argument("-n", "--name")
 
     args = parser.parse_args()
     collibra_instance = args.collibraInstance
     username = args.username
     password = args.password
-    domainId = args.domainId
-    typeId = args.typeId
+    domain_id = args.domainId
+    type_id = args.typeId
     name = args.name
-    print(domainId, typeId, name)
-    fullnames = collect_assets_fullname(collibra_instance=collibra_instance,
-                        username=username,
-                        password=password,
-                        domainId=domainId,
-                        typeId=typeId,
-                        name=name)
+    print(f"Input:\n\t- domain Id: {domain_id},\n\t- type Id: {type_id},\n\t- name: {name}")
+    fullnames = collect_assets_fullname(
+        collibra_instance=collibra_instance,
+        username=username,
+        password=password,
+        domain_id=domain_id,
+        type_id=type_id,
+        name=name,
+    )
 
+    print("Collectin fullnames done. Writing result to file")
     write_result_to_file(fullnames)
-

@@ -1,16 +1,19 @@
 import json
-import uuid
+import logging
 import urllib.parse
-import requests
+import uuid
 from typing import List, Optional, Sequence, Union
-from requests.auth import HTTPBasicAuth
-from src.exceptions import *
 
-
+import requests
 from pydantic.json import pydantic_encoder
+from requests.auth import HTTPBasicAuth
+from urllib3.connection import NameResolutionError
+
+from src.exceptions import CollibraAPIError, InvalidUUIDException, MissingInputExpection
 
 from .models import (
     Asset,
+    AssetFullnameDomain,
     AssetProperties,
     AssetType,
     CustomLineageConfig,
@@ -23,6 +26,7 @@ from .models import (
 )
 
 __all__ = ["generate_json_files", "generate_source_code"]
+MAX_HTTP_RETRY = 5
 
 
 def generate_json_files(
@@ -94,8 +98,10 @@ def generate_source_code(
         transformation_display_name=transformation_display_name,
     )
 
-def collect_assets_fullname(collibra_instance: str, username: str, password: str,
-                        typeId: str=None, domainId:str=None, name:str=None) -> List:
+
+def collect_assets_fullname(
+    collibra_instance: str, username: str, password: str, type_id: str = None, domain_id: str = None, name: str = None
+) -> List[AssetFullnameDomain]:
     """
     Helper function that collect assets fullname from Collibra
 
@@ -105,74 +111,80 @@ def collect_assets_fullname(collibra_instance: str, username: str, password: str
     :type username: str
     :param password: Collibra user's password
     :type password: str
-    :param typeId: Optional parameter - Asset type ID
-    :type typeId: str
-    :param domainId: Optional parameter - Collibra domain ID
-    :type domainId: str
+    :param type_id: Optional parameter - Asset type ID
+    :type type_id: str
+    :param domain_id: Optional parameter - Collibra domain ID
+    :type domain_id: str
     :param name: Optional parameter - Assets name
     :type name: str
     :returns: list of dictionary
     :rtype: list
     """
 
-    def get_assets_fullname_from_collibra() -> List:
+    def get_assets_fullname_from_collibra() -> List[AssetFullnameDomain]:
         fullnames = []
         auth = HTTPBasicAuth(username=username, password=password)
-        cursor = urllib.parse.quote('')
+        cursor = urllib.parse.quote("")
         limit = 1000
         attempt = 1
-        base_path = f'https://{collibra_instance}.collibra.com/rest/2.0/assets?limit={limit}'
+        base_path = f"https://{collibra_instance}.collibra.com/rest/2.0/assets?limit={limit}"
 
-        if domainId:
-            base_path = base_path + f'&domainId={domainId}'
-        if typeId:
-            base_path = base_path + f'&typeIds={typeId}'
+        if domain_id:
+            base_path = base_path + f"&domainId={domain_id}"
+        if type_id:
+            base_path = base_path + f"&typeIds={type_id}"
         if name:
-            base_path = base_path + f'&name={urllib.parse.quote(name)}'
+            base_path = base_path + f"&name={urllib.parse.quote(name)}"
 
         while cursor is not None:
-            query_path = base_path + f'&cursor={cursor}'
+            query_path = base_path + f"&cursor={cursor}"
             try:
-                print(f'Sending GET {query_path}')
+                logging.debug(f"Sending GET {query_path}")
                 ret = requests.get(query_path, auth=auth)
+            except NameResolutionError as e:
+                raise e
             except Exception as e:
-                print(f'GET {query_path} failed with\n{e}')
+                logging.debug(f"GET {query_path} failed with\n{e}")
                 attempt += 1
             else:
                 if ret.status_code == 200:
-                    print(f'Response received for GET {query_path}: {ret.status_code}')
+                    logging.debug(f"Response received for GET {query_path}: {ret.status_code}")
                     attempt = 1
                     result = json.loads(ret.text)
-                    cursor = result['nextCursor'] if 'nextCursor' in result else None
-                    for entry in result['results']:
-                        fullnames.append({"fullname": entry.get('name', ''),
-                                          "domain ID": entry.get('domain', {}).get('id', ''),
-                                          "id": entry.get('id', '')})
+                    cursor = result.get("nextCursor")
+                    for entry in result.get("results", []):
+                        fullnames.append(
+                            AssetFullnameDomain(
+                                fullname=entry.get("name", ""),
+                                domain_id=entry.get("domain", {}).get("id", ""),
+                                uuid=entry.get("id", ""),
+                            )
+                        )
 
                 elif ret.status_code >= 400 and ret.status_code < 500:
-                    raise CollibraAPIError(f'GET {query_path} failed with {ret.status_code} {ret.text}')
+                    raise CollibraAPIError(f"GET {query_path} failed with {ret.status_code} {ret.text}")
                 else:
-                    print(f'attempt {attempt}/5 GET {query_path} failed with {ret.status_code} {ret.text} ')
+                    logging.debug(f"attempt {attempt}/5 GET {query_path} failed with {ret.status_code} {ret.text}")
                     attempt += 1
-            if attempt > 5:
-                raise CollibraAPIError(f"Failed to retrieve asset's fullname after 5 attempts")
+            if attempt > MAX_HTTP_RETRY:
+                raise CollibraAPIError(f"Failed to retrieve asset's fullname after {MAX_HTTP_RETRY} attempts")
         return fullnames
+
     def validate_inputs():
-        if not domainId and not typeId and not name:
-            raise MissingInputExpection(
-                "At least one of the parameters must be provided: typeId, domainId or name")
+        if not domain_id and not type_id and not name:
+            raise MissingInputExpection("At least one of the parameters must be provided: typeId, domainId or name")
 
-        if typeId:
+        if type_id:
             try:
-                uuid.UUID(typeId)
+                uuid.UUID(type_id)
             except ValueError:
-                raise InvalidUUIDException(f'{typeId} is not a valid UUID')
+                raise InvalidUUIDException(f"Type Id {type_id} is not a valid UUID")
 
-        if domainId:
+        if domain_id:
             try:
-                uuid.UUID(domainId)
+                uuid.UUID(domain_id)
             except ValueError:
-                raise InvalidUUIDException(f'{domainId} is not a valid UUID')
+                raise InvalidUUIDException(f"Domain Id {domain_id} is not a valid UUID")
 
     validate_inputs()
     return get_assets_fullname_from_collibra()

@@ -32,6 +32,12 @@ class AssetProperties(BaseModel):
     domain_id: str
 
 
+class AssetFullnameDomain(BaseModel):
+    fullname: str
+    domain_id: str
+    uuid: str
+
+
 class SourceCodeHighLight(BaseModel):
     start: int
     len: int
