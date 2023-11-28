@@ -144,7 +144,7 @@ def collect_assets_fullname(
             except NameResolutionError as e:
                 raise e
             except Exception as e:
-                logging.debug(f"GET {query_path} failed with\n{e}")
+                logging.warning(f"GET {query_path} failed with\n{e}")
                 attempt += 1
             else:
                 if ret.status_code == 200:
@@ -164,7 +164,7 @@ def collect_assets_fullname(
                 elif ret.status_code >= 400 and ret.status_code < 500:
                     raise CollibraAPIError(f"GET {query_path} failed with {ret.status_code} {ret.text}")
                 else:
-                    logging.debug(f"attempt {attempt}/5 GET {query_path} failed with {ret.status_code} {ret.text}")
+                    logging.warning(f"attempt {attempt}/5 GET {query_path} failed with {ret.status_code} {ret.text}")
                     attempt += 1
             if attempt > MAX_HTTP_RETRY:
                 raise CollibraAPIError(f"Failed to retrieve asset's fullname after {MAX_HTTP_RETRY} attempts")
