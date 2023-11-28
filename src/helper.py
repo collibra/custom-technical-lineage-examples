@@ -100,7 +100,12 @@ def generate_source_code(
 
 
 def collect_assets_fullname(
-    collibra_instance: str, username: str, password: str, type_id: str = None, domain_id: str = None, name: str = None
+    collibra_instance: str,
+    username: str,
+    password: str,
+    type_id: Optional[str] = None,
+    domain_id: Optional[str] = None,
+    name: Optional[str] = None,
 ) -> List[AssetFullnameDomain]:
     """
     Helper function that collect assets fullname from Collibra
