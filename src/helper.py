@@ -158,7 +158,7 @@ def collect_assets_fullname(
                     result = json.loads(ret.text)
                     cursor = result.get("nextCursor")
                     for entry in result.get("results", []):
-                        fullname = entry.get('name')
+                        fullname = entry.get("name")
                         domain = entry.get("domain", {}).get("id")
                         uuid = entry.get("id")
                         if not fullname or not domain or not uuid:
