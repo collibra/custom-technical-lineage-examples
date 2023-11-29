@@ -38,5 +38,5 @@ if __name__ == "__main__":
         name=name,
     )
 
-    print("Collectin fullnames done. Writing result to file")
+    print("Collecting fullnames done. Writing result to file")
     write_result_to_file(fullnames)

@@ -122,7 +122,7 @@ def collect_assets_fullname(
     :type domain_id: str
     :param name: Optional parameter - Assets name
     :type name: str
-    :returns: list of dictionary
+    :returns: list of AssetFullnameDomain objects
     :rtype: list
     """
 
@@ -158,11 +158,16 @@ def collect_assets_fullname(
                     result = json.loads(ret.text)
                     cursor = result.get("nextCursor")
                     for entry in result.get("results", []):
+                        fullname = entry.get('name')
+                        domain = entry.get("domain", {}).get("id")
+                        uuid = entry.get("id")
+                        if not fullname or not domain or not uuid:
+                            continue
                         fullnames.append(
                             AssetFullnameDomain(
-                                fullname=entry.get("name", ""),
-                                domain_id=entry.get("domain", {}).get("id", ""),
-                                uuid=entry.get("id", ""),
+                                fullname=fullname,
+                                domain_id=domain,
+                                uuid=uuid,
                             )
                         )
 
