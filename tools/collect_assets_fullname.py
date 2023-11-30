@@ -2,6 +2,8 @@ import json
 import logging
 from argparse import ArgumentParser
 
+from pydantic.json import pydantic_encoder
+
 from src.helper import collect_assets_fullname
 
 logger = logging.getLogger(__name__)
@@ -9,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 def write_result_to_file(fullnames: list):
     with open("result.json", "w") as f:
-        json.dump(fullnames, f, indent=4)
+        json.dump(fullnames, f, indent=4, default=pydantic_encoder)
 
 
 if __name__ == "__main__":
@@ -25,6 +27,7 @@ if __name__ == "__main__":
     collibra_instance = args.collibraInstance
     username = args.username
     password = args.password
+    print(password)
     domain_id = args.domainId
     type_id = args.typeId
     name = args.name
