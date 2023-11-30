@@ -27,7 +27,6 @@ if __name__ == "__main__":
     collibra_instance = args.collibraInstance
     username = args.username
     password = args.password
-    print(password)
     domain_id = args.domainId
     type_id = args.typeId
     name = args.name
