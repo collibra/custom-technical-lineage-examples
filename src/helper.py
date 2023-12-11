@@ -30,10 +30,10 @@ MAX_HTTP_RETRY = 5
 
 
 def generate_json_files(
-    assets: Sequence[Union[NodeAsset, ParentAsset, LeafAsset]],
     lineages: List[Lineage],
     asset_types: List[AssetType],
     custom_lineage_config: CustomLineageConfig,
+    assets: Optional[Sequence[Union[NodeAsset, ParentAsset, LeafAsset]]] = None,
 ) -> None:
     """
     Helper function that generates the json files which can be used as input for custom technical lineage batch format
@@ -180,7 +180,7 @@ def collect_assets_fullname(
                 raise CollibraAPIError(f"Failed to retrieve asset's fullname after {MAX_HTTP_RETRY} attempts")
         return fullnames
 
-    def validate_inputs():
+    def validate_inputs() -> None:
         if not domain_id and not type_id and not name:
             raise MissingInputExpection("At least one of the parameters must be provided: typeId, domainId or name")
 

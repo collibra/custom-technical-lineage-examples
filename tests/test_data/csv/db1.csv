@@ -1,0 +1,3 @@
+System,Database,Schema,Table,Column,fullname,domain_id,System,Database,Schema,Table,Column,fullname,domain_id,source_code,highlights,transformation_display_name
+snowflake,KRISTOF,PUBLIC,T1,USERID,,,snowflake,KRISTOF,PUBLIC,V2,UI_2L,,,CREATE VIEW KRISTOF.PUBLIC.V2 AS select USERID from KRISTOF.PUBLIC.T1,"[0:70]",transformation
+snowflake,KRISTOF,PUBLIC,T1,USERID,domain1,fullname1,snowflake,KRISTOF,PUBLIC,V2,UI_2L,,,,,

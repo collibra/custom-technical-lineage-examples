@@ -9,7 +9,7 @@ from src.helper import collect_assets_fullname
 logger = logging.getLogger(__name__)
 
 
-def write_result_to_file(fullnames: list):
+def write_result_to_file(fullnames: list) -> None:
     with open("result.json", "w") as f:
         json.dump(fullnames, f, indent=4, default=pydantic_encoder)
 

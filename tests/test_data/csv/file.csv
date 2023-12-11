@@ -1,0 +1,2 @@
+GCS File System,GCS Bucket,Directory,Directory,File,fullname,domain_id,System,Database,Schema,Table,Column,fullname,domain_id,source_code,highlights,transformation_display_name
+gcs,catingestiontest,/,ingestion-test,mytest.csv,f13bf705-13a4-44c9-843e-f341feccfb6e > catingestiontest/ingestion-test/ingestion copy/mytest.csv/1611609340099809,fea1b0b0-705f-4e0d-b5eb-1f21132cc718,snowflake,KRISTOF,PUBLIC,V2,UI_2L,,,select * from table,"[0:100],[200:300]",transformation

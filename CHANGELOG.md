@@ -1,3 +1,9 @@
+## [1.2.0] - 2023-12-18
+  
+### Added
+
+ - Tool to ingest csv data and convert into json format
+
 ## [1.1.0] - 2023-11-30
   
 ### Added
