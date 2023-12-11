@@ -1,7 +1,8 @@
 import argparse
 import csv
+import os
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Optional, Set, Union
 
 from src.exceptions import InvalidCSVException
 from src.helper import generate_json_files, generate_source_code
@@ -113,6 +114,7 @@ def _create_source_code(
 
 def ingest_csv_files(source_directory: str, custom_lineage_config: CustomLineageConfig) -> None:
     source_dir = Path(source_directory)
+    unique_asset_types: Set[str] = set()
 
     # Verify source directory exists
     if not source_dir.exists():
@@ -136,6 +138,8 @@ def ingest_csv_files(source_directory: str, custom_lineage_config: CustomLineage
             )
             headers = next(csv_reader)
             index_fullname = _validate_header(headers=headers, csv_file=csv_file_to_ingest)
+            unique_asset_types.update(headers[: index_fullname[0]])
+            unique_asset_types.update(headers[index_fullname[0] + 2 : index_fullname[1]])
             for row in csv_reader:
                 if len(row) != len(headers):
                     raise InvalidCSVException(

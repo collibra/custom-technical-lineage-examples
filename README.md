@@ -42,6 +42,7 @@ System,Database,Schema,Table,Column,fullname,domain_id,System,Database,Schema,Ta
  * value for the leaf asset type is optional
  * values for `fullname` and `domain_id` are optional
  * values for `source_code`, `highlights` and `transformation_display_name` are optional
+ * `source_code` can be either a string or a full path to a file
 
  As the headers define the asset types you define the lineage relationships for, this means that 1 file can only contain lineage relationships for the same type of assets in the source/target, you can however create as many csv files in the directory as you want. The generated `metadata.json` file will contain the definition for `System`, `Database`, `Schema`, `Table` and `Column`; if you are using any other asset types you will need to add these in the `metadata.json` file with their respective `uuid`.
  
