@@ -98,6 +98,66 @@ def generate_source_code(
         transformation_display_name=transformation_display_name,
     )
 
+def _http_get(url: str, auth: HTTPBasicAuth) -> requests.Response:
+    attempt = 1
+    while attempt <= MAX_HTTP_RETRY:
+        try:
+            logging.info(f"Sending GET {url}")
+            ret = requests.get(url, auth=auth)
+        except NameResolutionError as e:
+            raise e
+        except Exception as e:
+            attempt += 1
+            logging.warning(f"GET {url} failed with\n{e}")
+        else:
+            if ret.status_code >= 400 and ret.status_code < 500:
+                raise CollibraAPIError(f"GET {url} failed with {ret.status_code} {ret.text}")
+            elif ret.status_code == 200:
+                logging.info(f"Response received for GET {url}: {ret.status_code}")
+                return ret
+            else:
+                logging.warning(f"attempt {attempt}/5 GET {url} failed with {ret.status_code} {ret.text}")
+                attempt += 1
+
+    raise CollibraAPIError(f"Failed to retrieve asset's fullname after {MAX_HTTP_RETRY} attempts")
+def collect_assets_typeid( collibra_instance: str,
+                           username: str,
+                           password: str,
+                           asset_type: Optional[str]= None) -> List[AssetType]:
+    """
+    Helper function that collect asset types ID from Collibra
+
+    :param collibra_instance: Collibra instance name
+    :type collibra_instance: str
+    :param username: Collibra username
+    :type username: str
+    :param password: Collibra user's password
+    :type password: str
+    :param asset_type: Optional parameter - Asset type name
+    :type asset_type: str
+    :returns: list of AssetFullnameDomain objects
+    :rtype: list
+    """
+
+    asset_types = []
+    limit = 100
+    offset = 0
+    auth = HTTPBasicAuth(username=username, password=password)
+    total = 1
+    while offset < total:
+        url = f"https://{collibra_instance}.collibra.com/rest/2.0/assetTypes?limit={limit}&offset={offset}"
+        search_by_name = "" if not asset_type else f"&name={asset_type}&nameMatchMode=EXACT"
+        ret = _http_get(url=f"{url}{search_by_name}", auth=auth)
+        result = json.loads(ret.text)
+        total = result["total"]
+        offset += limit
+        for entry in result["results"]:
+            name = entry.get("name")
+            id = entry.get("id")
+            asset_types.append(AssetType(name=name,
+                                         uuid=id))
+
+    return asset_types
 
 def collect_assets_fullname(
     collibra_instance: str,
@@ -131,7 +191,6 @@ def collect_assets_fullname(
         auth = HTTPBasicAuth(username=username, password=password)
         cursor = urllib.parse.quote("")
         limit = 1000
-        attempt = 1
         base_path = f"https://{collibra_instance}.collibra.com/rest/2.0/assets?limit={limit}"
 
         if domain_id:
@@ -143,41 +202,23 @@ def collect_assets_fullname(
 
         while cursor is not None:
             query_path = base_path + f"&cursor={cursor}"
-            try:
-                logging.debug(f"Sending GET {query_path}")
-                ret = requests.get(query_path, auth=auth)
-            except NameResolutionError as e:
-                raise e
-            except Exception as e:
-                logging.warning(f"GET {query_path} failed with\n{e}")
-                attempt += 1
-            else:
-                if ret.status_code == 200:
-                    logging.debug(f"Response received for GET {query_path}: {ret.status_code}")
-                    attempt = 1
-                    result = json.loads(ret.text)
-                    cursor = result.get("nextCursor")
-                    for entry in result.get("results", []):
-                        fullname = entry.get("name")
-                        domain = entry.get("domain", {}).get("id")
-                        uuid = entry.get("id")
-                        if not fullname or not domain or not uuid:
-                            continue
-                        fullnames.append(
-                            AssetFullnameDomain(
-                                fullname=fullname,
-                                domain_id=domain,
-                                uuid=uuid,
-                            )
-                        )
+            ret = _http_get(url=query_path, auth=auth)
+            result = json.loads(ret.text)
+            cursor = result.get("nextCursor")
+            for entry in result.get("results", []):
+                fullname = entry.get("name")
+                domain = entry.get("domain", {}).get("id")
+                uuid = entry.get("id")
+                if not fullname or not domain or not uuid:
+                    continue
+                fullnames.append(
+                    AssetFullnameDomain(
+                        fullname=fullname,
+                        domain_id=domain,
+                        uuid=uuid,
+                    )
+                )
 
-                elif ret.status_code >= 400 and ret.status_code < 500:
-                    raise CollibraAPIError(f"GET {query_path} failed with {ret.status_code} {ret.text}")
-                else:
-                    logging.warning(f"attempt {attempt}/5 GET {query_path} failed with {ret.status_code} {ret.text}")
-                    attempt += 1
-            if attempt > MAX_HTTP_RETRY:
-                raise CollibraAPIError(f"Failed to retrieve asset's fullname after {MAX_HTTP_RETRY} attempts")
         return fullnames
 
     def validate_inputs():
