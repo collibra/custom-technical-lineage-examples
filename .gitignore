@@ -1,8 +1,8 @@
 .mypy_cache
 .venv
 .vscode
-.tests/.coverage
+tests/.coverage
 **/__pycache__/
-.tests/.pytest_cache
-./src/custom_technical_lineage.egg-info
-
+tests/.pytest_cache
+src/custom_technical_lineage.egg-info
+local/

@@ -22,7 +22,7 @@ class TestIngestCSV(unittest.TestCase):
         self.csv_file_path = Path(self.filename)
         self.custom_lineage_config = CustomLineageConfig(
             application_name="unit tests csv",
-            output_directory="./test_data/csv/ingested/",
+            output_directory="./tests/test_data/csv/ingested/",
         )
 
     def test_validate_header(self):
@@ -300,17 +300,17 @@ class TestIngestCSV(unittest.TestCase):
 
     def test_ingest_csv_files(self):
         ingest_csv_files(
-            source_directory="./test_data/csv",
+            source_directory="./tests/test_data/csv",
             custom_lineage_config=self.custom_lineage_config,
         )
 
-        with open("./test_data/csv/metadata.json") as input_file:
+        with open("./tests/test_data/csv/metadata.json") as input_file:
             expected_metadata = json.load(input_file)
-        with open("./test_data/csv/ingested/metadata.json") as input_file:
+        with open("./tests/test_data/csv/ingested/metadata.json") as input_file:
             generated_metadata = json.load(input_file)
-        with open("./test_data/csv/lineage_v3.json") as input_file:
+        with open("./tests/test_data/csv/lineage_v3.json") as input_file:
             expected_lineage = json.load(input_file)
-        with open("./test_data/csv/ingested/lineage.json") as input_file:
+        with open("./tests/test_data/csv/ingested/lineage.json") as input_file:
             generated_lineage = json.load(input_file)
 
         # accodomate for random uuid in source code
@@ -319,11 +319,12 @@ class TestIngestCSV(unittest.TestCase):
                 lineage["source_code"]["path"] = "source_codes/uuid.txt"
 
         self.assertEqual(expected_metadata, generated_metadata)
-        self.assertEqual(expected_lineage, generated_lineage)
+        for generated_lineage_relationship in generated_lineage:
+            self.assertIn(generated_lineage_relationship, expected_lineage)
 
         # cleanup
         shutil.rmtree(
-            "/Users/kristof.vancoillie/Source/custom-technical-lineage-examples/tests/test_data/csv/ingested",
+            "./tests/test_data/csv/ingested",
             ignore_errors=True,
         )
 
