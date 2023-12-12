@@ -4,7 +4,7 @@ import shutil
 import urllib.parse
 import uuid
 from pathlib import Path
-from typing import List, Optional, Sequence, Union
+from typing import List, Optional, Sequence, TypeAlias, Union
 
 import requests
 from pydantic.json import pydantic_encoder
@@ -29,13 +29,14 @@ from .models import (
 
 __all__ = ["generate_json_files", "generate_source_code"]
 MAX_HTTP_RETRY = 5
+AssetTypeSequence: TypeAlias = Sequence[Union[NodeAsset, ParentAsset, LeafAsset]]
 
 
 def generate_json_files(
     lineages: List[Lineage],
     asset_types: List[AssetType],
     custom_lineage_config: CustomLineageConfig,
-    assets: Optional[Sequence[Union[NodeAsset, ParentAsset, LeafAsset]]] = None,
+    assets: Optional[AssetTypeSequence] = None,
 ) -> None:
     """
     Helper function that generates the json files which can be used as input for custom technical lineage batch format

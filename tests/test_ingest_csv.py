@@ -139,6 +139,7 @@ class TestIngestCSV(unittest.TestCase):
                 highlights="",
                 transformation_display_name="transformation",
                 custom_lineage_config=self.custom_lineage_config,
+                line=2,
             )
         )
 
@@ -148,6 +149,7 @@ class TestIngestCSV(unittest.TestCase):
             highlights="",
             transformation_display_name="transformation",
             custom_lineage_config=self.custom_lineage_config,
+            line=2,
         )
         self.assertIsInstance(source_code, SourceCode)
         self.assertRegex(source_code.path, r"source_codes\/.*\.txt")
@@ -160,6 +162,7 @@ class TestIngestCSV(unittest.TestCase):
             highlights="[0:100],[200:300]",
             transformation_display_name="transformation",
             custom_lineage_config=self.custom_lineage_config,
+            line=2,
         )
         self.assertIsInstance(source_code, SourceCode)
         self.assertRegex(source_code.path, r"source_codes\/.*\.txt")
@@ -168,6 +171,24 @@ class TestIngestCSV(unittest.TestCase):
         self.assertIsInstance(source_code.highlights[1], SourceCodeHighLight)
         self.assertEqual(source_code.highlights[1], SourceCodeHighLight(start=200, len=300))
         self.assertEqual(source_code.transformation_display_name, "transformation")
+
+        # invalid highlights
+        with self.assertRaises(InvalidCSVException):
+            source_code = _create_source_code(
+                source_code_text="source code",
+                highlights="[abc:def]",
+                transformation_display_name="transformation",
+                custom_lineage_config=self.custom_lineage_config,
+                line=2,
+            )
+        with self.assertRaises(InvalidCSVException):
+            source_code = _create_source_code(
+                source_code_text="source code",
+                highlights="[0-100]",
+                transformation_display_name="transformation",
+                custom_lineage_config=self.custom_lineage_config,
+                line=2,
+            )
 
     def test_create_asset(self):
         dummy_row = ["DB1", "SCH1", "T1", "COL1", "", "", "DB1", "SCH1", "T1", "COL1", "", "", "", "", ""]
@@ -187,6 +208,7 @@ class TestIngestCSV(unittest.TestCase):
             fullname="",
             csv_file=self.filename,
             row=dummy_row,
+            line=2,
         )
         self.assertIsInstance(created_asset, LeafAsset)
         self.assertIsNone(created_asset.props)
@@ -204,6 +226,7 @@ class TestIngestCSV(unittest.TestCase):
             fullname=fullname,
             csv_file=self.filename,
             row=dummy_row,
+            line=2,
         )
         self.assertIsInstance(created_asset, LeafAsset)
         self.assertIsInstance(created_asset.props, AssetProperties)
@@ -222,6 +245,7 @@ class TestIngestCSV(unittest.TestCase):
             fullname="",
             csv_file=self.filename,
             row=dummy_row,
+            line=2,
         )
         self.assertIsInstance(created_asset, ParentAsset)
         self.assertIsNone(created_asset.props)
@@ -238,6 +262,7 @@ class TestIngestCSV(unittest.TestCase):
             fullname=fullname,
             csv_file=self.filename,
             row=dummy_row,
+            line=2,
         )
         self.assertIsInstance(created_asset, ParentAsset)
         self.assertIsInstance(created_asset.props, AssetProperties)
@@ -256,6 +281,7 @@ class TestIngestCSV(unittest.TestCase):
                 fullname=fullname,
                 csv_file=self.filename,
                 row=dummy_row,
+                line=2,
             )
 
         # invalid - no nodes defined
@@ -269,6 +295,7 @@ class TestIngestCSV(unittest.TestCase):
                 fullname=fullname,
                 csv_file=self.filename,
                 row=dummy_row,
+                line=2,
             )
 
     def test_ingest_csv_files(self):

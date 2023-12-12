@@ -32,11 +32,21 @@ def _get_default_asset_types() -> List[AssetType]:
 def _validate_header(headers: List[str], csv_file: Path) -> List[int]:
     index_fullname = [i for i, header in enumerate(headers) if header == "fullname"]
     if len(index_fullname) != 2:
-        raise InvalidCSVException(f"The headers of the csv file {csv_file} do no match the required input.")
+        raise InvalidCSVException(
+            f"""The header of the csv file {csv_file} does not match the required input;
+             the header should contain exactly twice the column \"fullname\". Example of valid header:
+             \"Database, Schema, Table, Column, fullname, domain_id, Database, Schema, Table, Column,
+             fullname, domain_id, source_code, highlights, transformation_display_name\""""
+        )
 
     # there should be at least 1 node, parent and leaf
     if index_fullname[0] < 3 or index_fullname[1] - index_fullname[0] < 5:
-        raise InvalidCSVException(f"The headers of the csv file {csv_file} do no match the required input.")
+        raise InvalidCSVException(
+            f"""The header of the csv file {csv_file} does not match the required input;
+             at least 1 node, 1 parent and 1 leaf is required. Example of valid header:
+             \"Database, Schema, Table, Column, fullname, domain_id, Database, Schema, Table, Column,
+             fullname, domain_id, source_code, highlights, transformation_display_name\""""
+        )
 
     if headers[index_fullname[0] : index_fullname[0] + 2] + headers[index_fullname[1] :] != [
         "fullname",
@@ -47,13 +57,24 @@ def _validate_header(headers: List[str], csv_file: Path) -> List[int]:
         "highlights",
         "transformation_display_name",
     ]:
-        raise InvalidCSVException(f"The headers of the csv file {csv_file} do no match the required input.")
+        raise InvalidCSVException(
+            f"""The header of the csv file {csv_file} does not match the required input;
+             not all mandatory columns are provided. Example of valid header:
+             \"Database, Schema, Table, Column, fullname, domain_id, Database, Schema, Table, Column,
+             fullname, domain_id, source_code, highlights, transformation_display_name\""""
+        )
 
     return index_fullname
 
 
 def _create_asset(
-    asset_types: List[str], asset_names: List[str], domain_id: str, fullname: str, csv_file: str, row: List[str]
+    asset_types: List[str],
+    asset_names: List[str],
+    domain_id: str,
+    fullname: str,
+    csv_file: str,
+    row: List[str],
+    line: int,
 ) -> Union[ParentAsset, LeafAsset]:
     # Creating node asset
     nodes = []
@@ -61,7 +82,7 @@ def _create_asset(
         if asset_name:
             nodes.append(Asset(name=asset_name, type=asset_type))
     if not nodes:
-        raise InvalidCSVException(f"No nodes defined in {csv_file} in row {row}")
+        raise InvalidCSVException(f"No nodes defined in {csv_file} in row {row} (line {line})")
     nodes_asset = NodeAsset(nodes=nodes)
 
     # Creating the props when relevant
@@ -72,7 +93,7 @@ def _create_asset(
 
     # Creating parrent asset
     if not asset_names[-2]:
-        raise InvalidCSVException(f"Parent asset not defined in {csv_file} in row {row}")
+        raise InvalidCSVException(f"Parent asset not defined in {csv_file} in row {row} (line {line})")
     parent_asset = ParentAsset(
         nodes=nodes_asset.nodes, parent=Asset(name=asset_names[-2], type=asset_types[-2]), props=props
     )
@@ -90,7 +111,11 @@ def _create_asset(
 
 
 def _create_source_code(
-    source_code_text: str, highlights: str, transformation_display_name: str, custom_lineage_config: CustomLineageConfig
+    source_code_text: str,
+    highlights: str,
+    transformation_display_name: str,
+    custom_lineage_config: CustomLineageConfig,
+    line: int,
 ) -> Optional[SourceCode]:
     if not source_code_text:
         return None
@@ -98,9 +123,15 @@ def _create_source_code(
     if highlights:
         source_code_highlights = []
         for highlight in highlights.split(","):
-            source_code_highlights.append(
-                SourceCodeHighLight(start=highlight.split(":")[0][1:], len=highlight.split(":")[1][:-1])
-            )
+            try:
+                source_code_highlights.append(
+                    SourceCodeHighLight(start=highlight.split(":")[0][1:], len=highlight.split(":")[1][:-1])
+                )
+            except (ValueError, IndexError):
+                raise InvalidCSVException(
+                    f"""Invalid highlights provided: {highlights} (line {line}).
+                     Expected format: \"[0:100]\" (single) or \"[0:100],[200:100]\" (multiple)"""
+                )
     else:
         source_code_highlights = None
 
@@ -137,45 +168,54 @@ def ingest_csv_files(source_directory: str, custom_lineage_config: CustomLineage
                 csv_file,
             )
             headers = next(csv_reader)
-            index_fullname = _validate_header(headers=headers, csv_file=csv_file_to_ingest)
-            unique_asset_types.update(headers[: index_fullname[0]])
-            unique_asset_types.update(headers[index_fullname[0] + 2 : index_fullname[1]])
-            for row in csv_reader:
+            index_fullname_src, index_fullname_trg = _validate_header(headers=headers, csv_file=csv_file_to_ingest)
+            unique_asset_types.update(headers[:index_fullname_src])
+            unique_asset_types.update(headers[index_fullname_src + 2 : index_fullname_trg])
+            for line, row in enumerate(csv_reader, start=2):
                 if len(row) != len(headers):
                     raise InvalidCSVException(
-                        f"Row {row} in file {csv_file} does not contain same amount of entries as the headers"
+                        f"""Row {row} (line {line}) in file {csv_file} does not contain same amount
+                         of entries as the header"""
                     )
 
                 src = _create_asset(
-                    asset_types=headers[: index_fullname[0]],
-                    asset_names=row[: index_fullname[0]],
-                    fullname=row[index_fullname[0]],
-                    domain_id=row[index_fullname[0] + 1],
+                    asset_types=headers[:index_fullname_src],
+                    asset_names=row[:index_fullname_src],
+                    fullname=row[index_fullname_src],
+                    domain_id=row[index_fullname_src + 1],
                     csv_file=csv_file.name,
                     row=row,
+                    line=line,
                 )
                 trg = _create_asset(
-                    asset_types=headers[index_fullname[0] + 2 : index_fullname[1]],
-                    asset_names=row[index_fullname[0] + 2 : index_fullname[1]],
-                    fullname=row[index_fullname[1]],
-                    domain_id=row[index_fullname[1] + 1],
+                    asset_types=headers[index_fullname_src + 2 : index_fullname_trg],
+                    asset_names=row[index_fullname_src + 2 : index_fullname_trg],
+                    fullname=row[index_fullname_trg],
+                    domain_id=row[index_fullname_trg + 1],
                     csv_file=csv_file.name,
                     row=row,
+                    line=line,
                 )
 
-                source_code_text, highlights, transformation_display_name = row[index_fullname[1] + 2 :]
+                source_code_text, highlights, transformation_display_name = row[index_fullname_trg + 2 :]
                 source_code = _create_source_code(
                     source_code_text=source_code_text,
                     highlights=highlights,
                     transformation_display_name=transformation_display_name,
                     custom_lineage_config=custom_lineage_config,
+                    line=line,
                 )
 
                 lineages.append(Lineage(src=src, trg=trg, source_code=source_code))
 
-    generate_json_files(
-        lineages=lineages, custom_lineage_config=custom_lineage_config, asset_types=_get_default_asset_types()
-    )
+    if False:
+        # collect uuid from DIC
+        asset_types = _get_default_asset_types()
+    else:
+        # standard asset types
+        asset_types = _get_default_asset_types()
+
+    generate_json_files(lineages=lineages, custom_lineage_config=custom_lineage_config, asset_types=asset_types)
 
 
 if __name__ == "__main__":
