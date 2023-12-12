@@ -98,6 +98,7 @@ def generate_source_code(
         transformation_display_name=transformation_display_name,
     )
 
+
 def _http_get(url: str, auth: HTTPBasicAuth) -> requests.Response:
     attempt = 1
     while attempt <= MAX_HTTP_RETRY:
@@ -120,10 +121,11 @@ def _http_get(url: str, auth: HTTPBasicAuth) -> requests.Response:
                 attempt += 1
 
     raise CollibraAPIError(f"Failed to retrieve asset's fullname after {MAX_HTTP_RETRY} attempts")
-def collect_assets_typeid( collibra_instance: str,
-                           username: str,
-                           password: str,
-                           asset_type: Optional[str]= None) -> List[AssetType]:
+
+
+def collect_assets_typeid(
+    collibra_instance: str, username: str, password: str, asset_type: Optional[str] = None
+) -> List[AssetType]:
     """
     Helper function that collect asset types ID from Collibra
 
@@ -154,10 +156,10 @@ def collect_assets_typeid( collibra_instance: str,
         for entry in result["results"]:
             name = entry.get("name")
             id = entry.get("id")
-            asset_types.append(AssetType(name=name,
-                                         uuid=id))
+            asset_types.append(AssetType(name=name, uuid=id))
 
     return asset_types
+
 
 def collect_assets_fullname(
     collibra_instance: str,
