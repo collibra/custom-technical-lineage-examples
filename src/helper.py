@@ -120,7 +120,7 @@ def _http_get(url: str, auth: HTTPBasicAuth) -> requests.Response:
                 logging.warning(f"attempt {attempt}/5 GET {url} failed with {ret.status_code} {ret.text}")
                 attempt += 1
 
-    raise CollibraAPIError(f"Failed to retrieve asset's fullname after {MAX_HTTP_RETRY} attempts")
+    raise CollibraAPIError(f"Failed GET {url} after {MAX_HTTP_RETRY} attempts")
 
 
 def collect_assets_typeid(
@@ -241,3 +241,18 @@ def collect_assets_fullname(
 
     validate_inputs()
     return get_assets_fullname_from_collibra()
+
+
+def get_asset_types_name_from_lineage_json_file(path: str) -> set:
+    types = set([])
+    with open(path) as f:
+        lineages = json.load(f)
+        for lineage in lineages:
+            for src_trg in lineage:
+                types.add(lineage[src_trg].get("leaf", {}).get("type"))
+                types.add(lineage[src_trg].get("parent", {}).get("type"))
+                for node in lineage[src_trg].get("nodes", []):
+                    types.add(node.get("type"))
+    types.remove(None)
+    f.close()
+    return types
