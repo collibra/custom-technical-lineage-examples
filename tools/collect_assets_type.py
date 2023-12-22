@@ -13,13 +13,18 @@ def write_result_to_file(asset_types: dict):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("-c", "--collibraInstance", help="Collibra instance name. If your URL is "
-                                                         "https://mysintance.collibra.com, "
-                                                         "the instance name is 'mysintance'")
+    parser.add_argument(
+        "-c",
+        "--collibraInstance",
+        help="Collibra instance name. If your URL is "
+        "https://mysintance.collibra.com, "
+        "the instance name is 'mysintance'",
+    )
     parser.add_argument("-u", "--username", help="Collibra account's username used fetch the asset type IDs")
     parser.add_argument("-p", "--password", help="Collibra account's password used fetch the asset type IDs")
-    parser.add_argument("-a", "--applicationName", help="The type of data source for which "
-                                                        "you are creating a technical lineage.")
+    parser.add_argument(
+        "-a", "--applicationName", help="The type of data source for which " "you are creating a technical lineage."
+    )
     parser.add_argument("-t", "--assetType", help="Name of the asset for which the ID needs to be retrieved")
 
     args = parser.parse_args()

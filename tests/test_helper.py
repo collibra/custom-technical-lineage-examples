@@ -1,5 +1,7 @@
 import unittest
+
 from src.helper import get_asset_types_name_from_lineage_json_file
+
 
 class HelperTest(unittest.TestCase):
     def test_get_asset_types_name_from_lineage_json_file(self):

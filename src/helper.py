@@ -248,7 +248,7 @@ def get_asset_types_name_from_lineage_json_file(path: str) -> set:
     with open(path) as f:
         lineages = json.load(f)
         for lineage in lineages:
-            for src_trg in ['src', 'trg']:
+            for src_trg in ["src", "trg"]:
                 types.add(lineage[src_trg].get("leaf", {}).get("type"))
                 types.add(lineage[src_trg].get("parent", {}).get("type"))
                 for node in lineage[src_trg].get("nodes", []):
