@@ -1,3 +1,9 @@
+## [1.2.0] - 2023-12-22
+  
+### Added
+
+ - Helper function to find asset type's ID based on its name
+ 
 ## [1.1.0] - 2023-11-30
   
 ### Added

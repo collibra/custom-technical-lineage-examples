@@ -29,6 +29,19 @@ Where:
 * `--typeId` optional: is the type ID of the assets details to be retrieved
 * `--name` optional: is the display name of the asset's details to be retrieved
 
+## Retrieve asset type ID's based on asset type name 
+
+Usage: 
+```python3 -m tools.collect_assets_fullname [--collibraInstance] [--username] [--password] [--domainId] [--typeId] [--name]```
+
+Where:
+* `--collibraInstance` is the Collibra instance name. If instance's URL is https://myinstance.collibra.com the instance name is myinstance
+* `--username` is the Collibra username used to make API calls
+* `--password` is the Collibra's account password
+* `--applicationName`is the type of data source for which you are creating a technical lineage
+* `--typeId` optional: is the type ID of the assets details to be retrieved
+
+
 ## License
 
 Custom technical lineage examples is available under the [Collibra Marketplace License agreement](https://www.collibra.com/us/en/legal/documents/collibra-marketplace-license-agreement).
