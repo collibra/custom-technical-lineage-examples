@@ -1,9 +1,9 @@
-## [1.2.0] - 2023-12-18
+## [1.2.0] - 2023-12-22
   
 ### Added
 
- - Tool to ingest csv data and convert into json format
-
+ - Helper function to find asset type's ID based on its name
+ 
 ## [1.1.0] - 2023-11-30
   
 ### Added
