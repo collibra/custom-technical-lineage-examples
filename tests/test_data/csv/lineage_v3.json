@@ -1,0 +1,189 @@
+[
+  {
+      "src": {
+          "nodes": [
+              {
+                  "name": "gcs",
+                  "type": "GCS File System"
+              },
+              {
+                  "name": "catingestiontest",
+                  "type": "GCS Bucket"
+              },
+              {
+                  "name": "/",
+                  "type": "Directory"
+              }
+          ],
+          "parent": {
+              "name": "ingestion-test",
+              "type": "Directory"
+          },
+          "leaf": {
+              "name": "mytest.csv",
+              "type": "File"
+          },
+          "props": {
+              "fullname": "f13bf705-13a4-44c9-843e-f341feccfb6e > catingestiontest/ingestion-test/ingestion copy/mytest.csv/1611609340099809",
+              "domain_id": "fea1b0b0-705f-4e0d-b5eb-1f21132cc718"
+          }
+      },
+      "trg": {
+          "nodes": [
+              {
+                  "name": "snowflake",
+                  "type": "System"
+              },
+              {
+                  "name": "KRISTOF",
+                  "type": "Database"
+              },
+              {
+                  "name": "PUBLIC",
+                  "type": "Schema"
+              }
+          ],
+          "parent": {
+              "name": "V2",
+              "type": "Table"
+          },
+          "leaf": {
+              "name": "UI_2L",
+              "type": "Column"
+          },
+          "props": null
+      },
+      "source_code": {
+          "path": "source_codes/uuid.txt",
+          "highlights": [
+              {
+                  "start": 0,
+                  "len": 100
+              },
+              {
+                  "start": 200,
+                  "len": 300
+              }
+          ],
+          "transformation_display_name": "transformation"
+      }
+  },
+  {
+      "src": {
+          "nodes": [
+              {
+                  "name": "snowflake",
+                  "type": "System"
+              },
+              {
+                  "name": "KRISTOF",
+                  "type": "Database"
+              },
+              {
+                  "name": "PUBLIC",
+                  "type": "Schema"
+              }
+          ],
+          "parent": {
+              "name": "T1",
+              "type": "Table"
+          },
+          "leaf": {
+              "name": "USERID",
+              "type": "Column"
+          },
+          "props": null
+      },
+      "trg": {
+          "nodes": [
+              {
+                  "name": "snowflake",
+                  "type": "System"
+              },
+              {
+                  "name": "KRISTOF",
+                  "type": "Database"
+              },
+              {
+                  "name": "PUBLIC",
+                  "type": "Schema"
+              }
+          ],
+          "parent": {
+              "name": "V2",
+              "type": "Table"
+          },
+          "leaf": {
+              "name": "UI_2L",
+              "type": "Column"
+          },
+          "props": null
+      },
+      "source_code": {
+          "path": "source_codes/uuid.txt",
+          "highlights": [
+              {
+                  "start": 0,
+                  "len": 70
+              }
+          ],
+          "transformation_display_name": "transformation"
+      }
+  },
+  {
+      "src": {
+          "nodes": [
+              {
+                  "name": "snowflake",
+                  "type": "System"
+              },
+              {
+                  "name": "KRISTOF",
+                  "type": "Database"
+              },
+              {
+                  "name": "PUBLIC",
+                  "type": "Schema"
+              }
+          ],
+          "parent": {
+              "name": "T1",
+              "type": "Table"
+          },
+          "leaf": {
+              "name": "USERID",
+              "type": "Column"
+          },
+          "props": {
+              "fullname": "domain1",
+              "domain_id": "fullname1"
+          }
+      },
+      "trg": {
+          "nodes": [
+              {
+                  "name": "snowflake",
+                  "type": "System"
+              },
+              {
+                  "name": "KRISTOF",
+                  "type": "Database"
+              },
+              {
+                  "name": "PUBLIC",
+                  "type": "Schema"
+              }
+          ],
+          "parent": {
+              "name": "V2",
+              "type": "Table"
+          },
+          "leaf": {
+              "name": "UI_2L",
+              "type": "Column"
+          },
+          "props": null
+      },
+      "source_code": null
+  }
+]
