@@ -80,8 +80,19 @@ class Lineage(BaseModel):
 
 
 class CustomLineageConfig:
-    def __init__(self, application_name: str, output_directory: str, source_code_directory_name: str = "source_codes"):
+    def __init__(
+        self,
+        application_name: str,
+        output_directory: str,
+        source_code_directory_name: str = "source_codes",
+        dic_instance: str = "",
+        dic_username: str = "",
+        dic_password: str = "",
+    ):
         self.application_name = application_name
+        self.dic_instance = dic_instance
+        self.dic_username = dic_username
+        self.dic_password = dic_password
         self.output_directory_path = Path(output_directory)
         self.source_code_directory_name = source_code_directory_name
 
@@ -93,3 +104,9 @@ class CustomLineageConfig:
     @property
     def source_code_directory_path(self) -> Path:
         return self.output_directory_path / self.source_code_directory_name
+
+    @property
+    def dic_info_provided(self) -> bool:
+        if self.dic_instance and self.dic_username and self.dic_password:
+            return True
+        return False

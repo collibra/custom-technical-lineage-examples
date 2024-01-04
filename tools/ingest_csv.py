@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import List, Optional, Set, Union
 
 from src.exceptions import InvalidCSVException
-from src.helper import generate_json_files, generate_source_code
+from src.helper import collect_assets_typeid, generate_json_files, generate_source_code
 from src.models import (
     Asset,
     AssetProperties,
@@ -208,9 +208,20 @@ def ingest_csv_files(source_directory: str, custom_lineage_config: CustomLineage
 
                 lineages.append(Lineage(src=src, trg=trg, source_code=source_code))
 
-    if False:
+    if custom_lineage_config.dic_info_provided:
         # collect uuid from DIC
-        asset_types = _get_default_asset_types()
+        asset_types: List[AssetType] = []
+        for asset_type in unique_asset_types:
+            dic_asset_types = collect_assets_typeid(
+                collibra_instance=custom_lineage_config.dic_instance,
+                username=custom_lineage_config.dic_username,
+                password=custom_lineage_config.dic_password,
+                asset_type=asset_type,
+            )
+            if dic_asset_types:
+                asset_types.extend(dic_asset_types)
+            else:
+                print(f"Did not find asset type uuid for asset type {asset_type} specified in input.")
     else:
         # standard asset types
         asset_types = _get_default_asset_types()
@@ -224,12 +235,29 @@ if __name__ == "__main__":
     parser.add_argument(
         "target_directory", help="Target directory in which the files for batch custom lineage will be stored"
     )
+    parser.add_argument(
+        "-c",
+        "--collibraInstance",
+        default="",
+        help="Collibra instance name. If your URL is "
+        "https://mysintance.collibra.com, "
+        "the instance name is 'mysintance'",
+    )
+    parser.add_argument(
+        "-u", "--username", default="", help="Collibra account's username used fetch the asset type IDs"
+    )
+    parser.add_argument(
+        "-p", "--password", default="", help="Collibra account's password used fetch the asset type IDs"
+    )
     args = parser.parse_args()
 
     custom_lineage_config = CustomLineageConfig(
         application_name="custom-lineage-batch-csv-ingested",
         output_directory=args.target_directory,
         source_code_directory_name="source_codes",
+        dic_instance=args.collibraInstance,
+        dic_username=args.username,
+        dic_password=args.password,
     )
 
     ingest_csv_files(source_directory=args.source_directory, custom_lineage_config=custom_lineage_config)

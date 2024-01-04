@@ -16,11 +16,16 @@ Where:
 ## Convert CSV files to the new batch definition format
 
 Usage:
-```python3 -m tools.ingest_csv <source_directory> <target_directory>```
+```python3 -m tools.ingest_csv <source_directory> <target_directory> [--collibraInstance] [--username] [--password]```
 
 Where:
  * `<source_directory>` is the existing directory with the CSV files that you want to convert.
  * `<target_directory>` is the target directory for the resulting batch definition artifacts. If the target directory doesn't exist, it will be created.
+ * `--collibraInstance` is the Collibra instance name. If instance's URL is https://myinstance.collibra.com the instance name is myinstance
+* `--username` is the Collibra username used to make API calls
+* `--password` is the Collibra's account password
+
+When `collibraInstance`, `username` and `password` are provided, the asset type uuids provided in the CSV files will be automatically fetched from your catalog instance. When not provided you need to update the function `_get_default_asset_types` in `tools.ingest_csv.py` so they return all the assets used.
 
 The first row in every CSV file is the header. The following rows define the lineage relationships. If we take a look at an example header row, we find in order:
 ```csv
