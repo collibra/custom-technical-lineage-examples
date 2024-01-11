@@ -1,6 +1,5 @@
 import argparse
 import csv
-import os
 from pathlib import Path
 from typing import List, Optional, Set, Union
 
