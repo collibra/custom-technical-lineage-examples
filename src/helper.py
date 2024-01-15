@@ -1,8 +1,10 @@
 import json
 import logging
+import shutil
 import urllib.parse
 import uuid
-from typing import List, Optional, Sequence, Union
+from pathlib import Path
+from typing import List, Optional, Sequence, TypeAlias, Union
 
 import requests
 from pydantic.json import pydantic_encoder
@@ -27,13 +29,14 @@ from .models import (
 
 __all__ = ["generate_json_files", "generate_source_code"]
 MAX_HTTP_RETRY = 5
+AssetTypeSequence: TypeAlias = Sequence[Union[NodeAsset, ParentAsset, LeafAsset]]
 
 
 def generate_json_files(
-    assets: Sequence[Union[NodeAsset, ParentAsset, LeafAsset]],
     lineages: List[Lineage],
     asset_types: List[AssetType],
     custom_lineage_config: CustomLineageConfig,
+    assets: Optional[AssetTypeSequence] = None,
 ) -> None:
     """
     Helper function that generates the json files which can be used as input for custom technical lineage batch format
@@ -77,7 +80,7 @@ def generate_source_code(
     """
     Helper function that generates `SourceCode` object.
 
-    :param source_code_text: Text to use as source code
+    :param source_code_text: Text to use as source code or path of a file to be used
     :type source_code_text: str
     :param custom_lineage_config: Configuration object
     :type custom_lineage_config: CustomLineageConfig
@@ -88,10 +91,15 @@ def generate_source_code(
     :returns: SourceCode object constructed using the provided input
     :rtype: SourceCode
     """
-    # generate file name and create directory
-    file_name = f"{str(uuid.uuid4())}.txt"
-    with open(custom_lineage_config.source_code_directory_path / file_name, "w") as out_file:
-        out_file.write(source_code_text)
+    # in case of a file
+    if Path(source_code_text).is_file():
+        file_name = Path(source_code_text).name
+        shutil.copy(source_code_text, custom_lineage_config.source_code_directory_path / file_name)
+    else:
+        # generate file name
+        file_name = f"{str(uuid.uuid4())}.txt"
+        with open(custom_lineage_config.source_code_directory_path / file_name, "w") as out_file:
+            out_file.write(source_code_text)
     return SourceCode(
         path=f"{custom_lineage_config.source_code_directory_name}/{file_name}",
         highlights=highlights,
@@ -223,7 +231,7 @@ def collect_assets_fullname(
 
         return fullnames
 
-    def validate_inputs():
+    def validate_inputs() -> None:
         if not domain_id and not type_id and not name:
             raise MissingInputExpection("At least one of the parameters must be provided: typeId, domainId or name")
 

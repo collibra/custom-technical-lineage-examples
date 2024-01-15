@@ -6,7 +6,7 @@ from pydantic.json import pydantic_encoder
 from src.helper import collect_assets_typeid
 
 
-def write_result_to_file(asset_types: dict):
+def write_result_to_file(asset_types: dict) -> None:
     with open("metadata.json", "w") as f:
         json.dump(asset_types, f, indent=4, default=pydantic_encoder)
 
