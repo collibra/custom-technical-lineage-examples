@@ -3,6 +3,7 @@ import shutil
 
 from tools.translate_to_batch_format import convert
 
+
 def test_translate_with_simple_and_advanced_source_code() -> None:
     convert(
         input_directory="./test_data/conversion",
@@ -32,6 +33,7 @@ def test_translate_with_simple_and_advanced_source_code() -> None:
 
     # cleanup
     shutil.rmtree("./test_data/conversion/v3", ignore_errors=True)
+
 
 def test_translat_without_source_code() -> None:
     # convert input

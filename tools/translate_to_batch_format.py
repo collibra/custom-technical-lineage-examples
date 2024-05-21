@@ -142,7 +142,7 @@ def convert_lineages(
             lineage_relationship = LineageWithSource(
                 src=_convert_lineage_node(lineage_relationship_v1["src_path"]),
                 trg=_convert_lineage_node(lineage_relationship_v1["trg_path"]),
-                source_code=source_code
+                source_code=source_code,
             )
         else:
             lineage_relationship = Lineage(
