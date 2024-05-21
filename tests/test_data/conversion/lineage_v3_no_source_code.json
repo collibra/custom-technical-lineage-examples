@@ -49,11 +49,6 @@
         "type": "Column"
       },
       "props": null
-    },
-    "source_code": {
-      "path": "source_codes/uuid.txt",
-      "highlights": null,
-      "transformation_display_name": "VIEW1 creation"
     }
   },
   {
@@ -106,16 +101,6 @@
         "type": "Column"
       },
       "props": null
-    },
-    "source_code": {
-      "path": "source_codes/uuid.txt",
-      "highlights": [
-        {
-          "start": 0,
-          "len": 26
-        }
-      ],
-      "transformation_display_name": "VIEW1_creation"
     }
   }
 ]

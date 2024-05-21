@@ -105,8 +105,27 @@
             "column": "col2"
           }
         ],
-        "mapping": "VIEW1 creation",
-        "source_code": "SELECT col1, col2 from T1;"
-      }]
+        "mapping_ref": {
+            "mapping": "VIEW1_creation",
+            "source_code": "transforms.sql",
+            "codebase_pos": [
+              {
+                "pos_start": 0,
+                "pos_len": 26
+              }
+            ]
+          }
+        }
+],
+"codebase_files": {
+  "transforms.sql": {
+    "mapping_refs": {
+      "VIEW1_creation": {
+        "pos_start": 0,
+        "pos_len": 26
+      }
+    }
+  }
+}
   }
   
