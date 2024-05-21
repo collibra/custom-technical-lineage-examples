@@ -12,6 +12,7 @@ from src.models import (
     CustomLineageConfig,
     LeafAsset,
     Lineage,
+    LineageWithSource,
     NodeAsset,
     ParentAsset,
     SourceCode,
@@ -205,7 +206,10 @@ def ingest_csv_files(source_directory: str, custom_lineage_config: CustomLineage
                     line=line,
                 )
 
-                lineages.append(Lineage(src=src, trg=trg, source_code=source_code))
+                if not source_code:
+                    lineages.append(Lineage(src=src, trg=trg))
+                else:
+                    lineages.append(LineageWithSource(src=src, trg=trg, source_code=source_code))
 
     if custom_lineage_config.dic_info_provided:
         # collect uuid from DIC

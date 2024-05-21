@@ -13,6 +13,7 @@ __all__ = [
     "ParentAsset",
     "LeafAsset",
     "Lineage",
+    "LineageWithSource",
     "CustomLineageConfig",
 ]
 
@@ -70,13 +71,16 @@ class LeafAsset(BaseModel):
 class Lineage(BaseModel):
     src: Union[LeafAsset, ParentAsset]
     trg: Union[LeafAsset, ParentAsset]
-    source_code: Optional[SourceCode] = None
 
     @model_validator(mode="after")
     def verify_allowed_relationship(self) -> "Lineage":
         if isinstance(self.src, ParentAsset) and isinstance(self.trg, LeafAsset):
             raise ValueError("If src is a ParentAsset, trg has to be a ParentAsset as well (table level lineage).")
         return self
+
+
+class LineageWithSource(Lineage):
+    source_code: SourceCode
 
 
 class CustomLineageConfig:
