@@ -22,8 +22,7 @@
       "leaf": {
         "name": "col1",
         "type": "Column"
-      },
-      "props": null
+      }
     },
     "trg": {
       "nodes": [
@@ -47,10 +46,8 @@
       "leaf": {
         "name": "col1",
         "type": "Column"
-      },
-      "props": null
-    },
-    "source_code": null
+      }
+    }
   },
   {
     "src": {
@@ -75,8 +72,7 @@
       "leaf": {
         "name": "col2",
         "type": "Column"
-      },
-      "props": null
+      }
     },
     "trg": {
       "nodes": [
@@ -100,9 +96,7 @@
       "leaf": {
         "name": "col2",
         "type": "Column"
-      },
-      "props": null
-    },
-    "source_code": null
+      }
+    }
   }
 ]

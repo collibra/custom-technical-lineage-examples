@@ -59,7 +59,7 @@ def generate_json_files(
 
     # creating lineage.json
     with open(custom_lineage_config.output_directory_path / "lineage.json", "w") as out_file:
-        json.dump(lineages, out_file, default=pydantic_encoder)
+        json.dump([lineage.model_dump(exclude_none=True) for lineage in lineages], out_file, default=pydantic_encoder)
 
     # creating metadata.json
     with open(custom_lineage_config.output_directory_path / "metadata.json", "w") as out_file:
