@@ -1,3 +1,13 @@
+## [1.4.0] - 2024-05-23
+
+### Changed
+
+- Helper function that generates lineage files to omit empty properties
+
+### Fixed
+
+- Conversion tool for simple and advanced source code mappings
+
 ## [1.3.0] - 2024-01-04
 
 ### Added

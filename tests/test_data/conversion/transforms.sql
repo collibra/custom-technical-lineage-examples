@@ -1,0 +1,1 @@
+SELECT col1, col2 from T1;

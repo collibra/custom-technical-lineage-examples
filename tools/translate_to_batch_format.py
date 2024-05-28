@@ -67,7 +67,7 @@ def _convert_lineage_source(
     if "mapping_ref" in lineage_relationship_v1:
         source_code_file_v1 = lineage_relationship_v1.get("mapping_ref", {}).get("source_code", "")
         mapping_v1 = lineage_relationship_v1.get("mapping_ref", {}).get("mapping", "")
-        codebase_pos_v1 = lineage_relationship_v1.get("codebase_pos", [])
+        codebase_pos_v1 = lineage_relationship_v1.get("mapping_ref", {}).get("codebase_pos", [])
         if not source_code_file_v1:
             return None
 
@@ -88,7 +88,7 @@ def _convert_lineage_source(
                     custom_lineage_config=custom_lineage_config,
                     transformation_display_name=mapping_v1,
                     highlights=[
-                        SourceCodeHighLight(start=highlight_v1["post_start"], len=highlight_v1["pos_len"])
+                        SourceCodeHighLight(start=highlight_v1["pos_start"], len=highlight_v1["pos_len"])
                         for highlight_v1 in codebase_pos_v1
                     ],
                 )

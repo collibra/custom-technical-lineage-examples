@@ -50,8 +50,7 @@
           "leaf": {
               "name": "UI_2L",
               "type": "Column"
-          },
-          "props": null
+          }
       },
       "source_code": {
           "path": "source_codes/uuid.txt",
@@ -91,8 +90,7 @@
           "leaf": {
               "name": "USERID",
               "type": "Column"
-          },
-          "props": null
+          }
       },
       "trg": {
           "nodes": [
@@ -116,8 +114,7 @@
           "leaf": {
               "name": "UI_2L",
               "type": "Column"
-          },
-          "props": null
+          }
       },
       "source_code": {
           "path": "source_codes/uuid.txt",
@@ -181,9 +178,7 @@
           "leaf": {
               "name": "UI_2L",
               "type": "Column"
-          },
-          "props": null
-      },
-      "source_code": null
+          }
+      }
   }
 ]
