@@ -1,6 +1,7 @@
 # Custom technical lineage
 
 This repository contains examples and helper functions to help you develop your custom technical lineage files.
+The dependencies are collected in the `requirements.txt` file and can be installed using `pip install -r requirements.txt`.
 
 ## Convert single-file definition files to the new batch definition format
 
@@ -74,7 +75,7 @@ This example creates a lineage relationship between a file and a column. The cus
 
 ## Python batch definition custom technical lineage examples
 
-`tools.example.py` and `tools.example_with_props.py` contain examples of how you can use the models and helper functions defined in `src.models.py` and `src.helper.py`.
+`tools.example.py` and `tools.example_with_props.py` contain examples of how you can use the models and helper functions defined in `src.models.py` and `src.helper.py` to generate the required files for custom technical lineage. It also shows how the functions can be used to upload the files to edge, trigger `edgecli` command and synchronize the capability.
 
 ## Retrieve the fullname and domain ID of an asset, based on the domain ID, type ID or display name
 

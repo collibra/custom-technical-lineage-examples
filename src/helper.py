@@ -264,3 +264,38 @@ def get_asset_types_name_from_lineage_json_file(path: str) -> set:
     if None in types:
         types.remove(None)
     return types
+
+
+def synchronize_capability(
+    collibra_instance: str, username: str, password: str, capability_id: str
+) -> Optional[requests.Response]:
+    """
+    Helper function that triggers the synchronisation of the custom lineage capability
+
+    :param collibra_instance: Collibra instance name
+    :type collibra_instance: str
+    :param username: Collibra username
+    :type username: str
+    :param password: Collibra user's password
+    :type password: str
+    :param capability_id: ID of the capability to synchronize
+    :type type_id: str
+    :returns: response of the http post call to synchronize the capability
+    :rtype: requests.Response
+    """
+    auth = HTTPBasicAuth(username=username, password=password)
+    url = f"https://{collibra_instance}/rest/catalog/1.0/genericIntegration/{capability_id}/run"
+    logging.info(f"Sending POST {url}")
+    try:
+        ret = requests.post(url=url, auth=auth)
+    except NameResolutionError as e:
+        raise e
+    except Exception as e:
+        logging.warning(f"POST {url} failed with\n{e}")
+    else:
+        if ret.status_code >= 400 and ret.status_code < 500:
+            raise CollibraAPIError(f"POST {url} failed with {ret.status_code} {ret.text}")
+        elif ret.status_code == 200:
+            logging.info(f"Response received for GET {url}: {ret.status_code}")
+            return ret
+    return None
