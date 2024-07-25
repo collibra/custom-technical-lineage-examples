@@ -11,10 +11,9 @@ class EdgeConnection(object):
         self.username = username
         self.certificate = certificate_path
         self.port = port
-        self.ssh_client = None
         self.ssh_client = self.connect()
 
-    def connect(self) -> Optional[paramiko.SSHClient]:
+    def connect(self) -> paramiko.SSHClient:
         try:
             ssh_client = paramiko.SSHClient()
             ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -29,29 +28,26 @@ class EdgeConnection(object):
             logging.info(f"Connected to {self.address} over SSH")
 
         except Exception as e:
-            ssh_client = None
-            logging.error(f"Unable to connect to {self.address} over SSH: {e}")
-        return ssh_client
+            logging.error(f"Failed to connect to {self.address} over SSH")
+            raise e
+        else:
+            return ssh_client
 
     def send_command(self, command: str) -> None:
-        if self.ssh_client:
-            stdin, stdout, stderr = self.ssh_client.exec_command(command)
-            while not stdout.channel.exit_status_ready():
-                # Print data when available
-                if stdout.channel.recv_ready():
-                    alldata = stdout.channel.recv(1024)
-                    prevdata = b"1"
-                    while prevdata:
-                        prevdata = stdout.channel.recv(1024)
-                        alldata += prevdata
-                    logging.info(str(alldata))
-        else:
-            logging.error(f"Connection to Edge server {self.address} not opened.")
+        stdin, stdout, stderr = self.ssh_client.exec_command(command)
+        while not stdout.channel.exit_status_ready():
+            # Print data when available
+            if stdout.channel.recv_ready():
+                alldata = stdout.channel.recv(1024)
+                prevdata = b"1"
+                while prevdata:
+                    prevdata = stdout.channel.recv(1024)
+                    alldata += prevdata
+                logging.info(str(alldata))
 
     def upload_folder(self, source_folder: str, target_folder: str) -> None:
-        if self.ssh_client:
-            scp = SCPClient(self.ssh_client.get_transport())
-            scp.put(files=source_folder, remote_path=target_folder, recursive=True)
+        scp = SCPClient(self.ssh_client.get_transport())
+        scp.put(files=source_folder, remote_path=target_folder, recursive=True)
 
     def upload_edge_shared_folder(self, edge_directory: str, shared_connection_folder: str) -> None:
         self.send_command(
