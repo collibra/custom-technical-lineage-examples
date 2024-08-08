@@ -1,4 +1,5 @@
-from src.helper import generate_json_files, generate_source_code
+from src.edge import EdgeConnection
+from src.helper import generate_json_files, generate_source_code, synchronize_capability
 from src.models import (
     Asset,
     AssetProperties,
@@ -99,3 +100,17 @@ lineages.append(
 
 # Generating the json files
 generate_json_files(assets=[], lineages=lineages, asset_types=asset_types, custom_lineage_config=custom_lineage_config)
+
+# Preparing the Edge capability
+edge_directory = "/tmp/cl3/"  # this is the folder on  Edge to which the files will be uploaded to
+edge_shared_connection_folder = "shared-folder"  # this is the name of the shared folder as configured on the capability
+edge_connection = EdgeConnection(address="192.169.10.10", username="username", certificate="/path-to-ssh-cert")
+edge_connection.upload_folder(source_folder=custom_lineage_config.output_directory_path, target_folder=edge_directory)
+edge_connection.upload_edge_shared_folder(
+    edge_directory=edge_directory, shared_connection_folder=edge_shared_connection_folder
+)
+
+# Trigger the capability
+synchronize_capability(
+    collibra_instance="", username="Admin", password="password", capability_id="custom_lineage_capability_id"
+)

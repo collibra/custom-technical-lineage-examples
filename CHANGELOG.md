@@ -1,3 +1,9 @@
+## [1.5.0] - 2024-07-23
+
+### Changed
+
+- Helper functionality and example to automate upload to Edge, trigger edgecli command and synchronize the capability
+
 ## [1.4.0] - 2024-05-23
 
 ### Changed
