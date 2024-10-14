@@ -1,3 +1,9 @@
+## [1.5.1] - 2024-10-14
+
+### Fixed
+
+- Encoding issue when converting csv files
+
 ## [1.5.0] - 2024-07-23
 
 ### Changed
