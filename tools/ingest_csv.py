@@ -162,7 +162,7 @@ def ingest_csv_files(source_directory: str, custom_lineage_config: CustomLineage
     # Extract the lineage relationships from the csv files
     lineages = []
     for csv_file_to_ingest in csv_files:
-        with open(csv_file_to_ingest, "r") as csv_file:
+        with open(csv_file_to_ingest, "r", encoding='utf-8-sig') as csv_file:
             csv_reader = csv.reader(
                 csv_file,
             )
